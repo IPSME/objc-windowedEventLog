@@ -73,8 +73,9 @@
 	[_nsmdic_Cache setObject:entryContext forKey:nsstr_Entry];
 }
 
-- (EntryContext*) contains:(NSString*)nsstr_Entry {
-	return [_nsmdic_Cache objectForKey:nsstr_Entry];
+- (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)entryContext {
+	*entryContext= [_nsmdic_Cache objectForKey:nsstr_Entry];
+	return (*entryContext != nil);
 }
 
 - (void) expire:(NSString*)nsstr_Entry {

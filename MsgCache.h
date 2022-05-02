@@ -35,7 +35,7 @@
 //- (id) initWithMilliseconds:(NSTimeInterval)poll_res_milliseconds;
 
 - (void) cacheEntry:(NSString*)nsstr_Entry withContext:(EntryContext*)entryContext;
-- (EntryContext*) contains:(NSString*)nsstr_Entry;
+- (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)entryContext;
 - (void) expire:(NSString*)nsstr_Entry;
 
 @end
