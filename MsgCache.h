@@ -17,25 +17,31 @@
 
 @property id context;
 
++ (EntryContext*) contextWithSeconds:(NSTimeInterval)nsti_s_TTL;
++ (EntryContext*) context:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
+
 - (id) init;
 - (id) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL;
 - (id) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
 
-+ (EntryContext*) contextWithSeconds:(NSTimeInterval)nsti_s_TTL;
-+ (EntryContext*) context:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
+- (BOOL) expired;
 
 @end
+
+const NSTimeInterval kti_POLL_RES_MILLISECONDS= 1;
 
 @interface MsgCache : NSObject
 {
 	NSMutableDictionary* _nsmdic_Cache;
+	NSTimer* _timer;
 }
 
 - (id) init;
-//- (id) initWithMilliseconds:(NSTimeInterval)poll_res_milliseconds;
+- (id) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds;
 
 - (void) cacheEntry:(NSString*)nsstr_Entry withContext:(EntryContext*)entryContext;
-- (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)entryContext;
+- (BOOL) contains:(NSString*)nsstr_Entry;
+- (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)p_entryContext;
 - (void) expire:(NSString*)nsstr_Entry;
 
 @end
