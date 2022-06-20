@@ -28,7 +28,7 @@
 
 @end
 
-const NSTimeInterval kti_POLL_RES_MILLISECONDS= 1;
+extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 
 @interface MsgCache : NSObject
 {

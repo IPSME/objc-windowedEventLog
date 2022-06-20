@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "MsgCache.h"
 
+const NSTimeInterval kti_POLL_RES_MILLISECONDS= 1;
+
 @implementation EntryContext
 @synthesize context= _id_Context;
 
