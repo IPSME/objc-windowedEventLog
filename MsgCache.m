@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MsgCache.h"
 
-const NSTimeInterval kti_POLL_RES_MILLISECONDS= 1;
+const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 
 @implementation EntryContext
 @synthesize context= _id_Context;
@@ -66,7 +66,7 @@ const NSTimeInterval kti_POLL_RES_MILLISECONDS= 1;
 @implementation MsgCache
 
 - (id) init {
-	self = [self initWithSeconds:kti_POLL_RES_MILLISECONDS];
+	self = [self initWithSeconds:kti_POLL_RES_SECONDS];
 	if (self) {
 	}
 	return self;	
