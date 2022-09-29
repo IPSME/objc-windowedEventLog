@@ -20,9 +20,9 @@
 + (EntryContext*) contextWithSeconds:(NSTimeInterval)nsti_s_TTL;
 + (EntryContext*) context:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
 
-- (id) init;
-- (id) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL;
-- (id) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
+- (instancetype) init NS_UNAVAILABLE;
+- (instancetype) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL;
+- (instancetype) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
 
 - (BOOL) expired;
 
@@ -36,8 +36,8 @@ extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 	NSTimer* _timer;
 }
 
-- (id) init;
-- (id) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds;
+- (instancetype) init;
+- (instancetype) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds;
 
 - (void) cacheEntry:(NSString*)nsstr_Entry withContext:(EntryContext*)entryContext;
 - (BOOL) contains:(NSString*)nsstr_Entry;

@@ -15,24 +15,23 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 @synthesize context= _id_Context;
 
 + (EntryContext*) contextWithSeconds:(NSTimeInterval)nsti_s_TTL {
-	return [[EntryContext alloc] initContextWithSeconds:nsti_s_TTL];
+	return [[self alloc] initContextWithSeconds:nsti_s_TTL];
 }
 + (EntryContext*) context:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL {
-	return [[EntryContext alloc] initContext:id_Context withSeconds:nsti_s_TTL];
+	return [[self alloc] initContext:id_Context withSeconds:nsti_s_TTL];
 }
 
-- (id) init
-{
-	self = [super init];
-	if (self) {
-	}
-	return self;
-}
+//- (instancetype) init
+//{
+//	self = [super init];
+//	if (self) {
+//	}
+//	return self;
+//}
 
-- (id) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL
+- (instancetype) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL
 {
-	self= [self init];
-	if (self) {
+	if ([self init]) {
 		_id_Context= [NSNull null];
 		_nsti_s_TTL= nsti_s_TTL;
 		_nsdt_instant= [NSDate date];
@@ -40,10 +39,9 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 	return self;
 }
 
-- (id) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL
+- (instancetype) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL
 {
-	self= [self init];
-	if (self) {
+	if ([self init]) {
 		_id_Context= id_Context;
 		_nsti_s_TTL= nsti_s_TTL;
 		_nsdt_instant= [NSDate date];
@@ -65,14 +63,14 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 
 @implementation MsgCache
 
-- (id) init {
+- (instancetype) init {
 	self = [self initWithSeconds:kti_POLL_RES_SECONDS];
 	if (self) {
 	}
 	return self;	
 }
 
-- (id) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds
+- (instancetype) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds
 {
 	self = [super init];
 	if (self) {
