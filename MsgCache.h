@@ -44,6 +44,15 @@ extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 - (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)p_entryContext;
 - (void) expire:(NSString*)nsstr_Entry;
 
+
+// NSEnumerator* enumerator= [msgCache_ entryEnumerator];
+// NSString* nsstr_Entry;
+// while((nsstr_Entry= [enumerator nextObject]) != nil) {
+//     EntryContext* entryContext;
+//     [msgCache_ contains:nsstr_Entry context:&entryContext];
+//}
+- (NSEnumerator*) entryEnumerator;
+
 @end
 
 #endif /* MsgCache_h */

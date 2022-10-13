@@ -112,5 +112,9 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 	[_nsmdic_Cache removeObjectForKey:nsstr_Entry];
 }
 
+- (NSEnumerator*) entryEnumerator {
+	return [_nsmdic_Cache keyEnumerator];
+}
+
 @end
 
