@@ -10,15 +10,34 @@
 #import "MsgCache.h"
 
 const NSTimeInterval kti_POLL_RES_SECONDS= 1;
+const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 
-@implementation EntryContext
-@synthesize context= _id_Context;
-
-+ (EntryContext*) contextWithSeconds:(NSTimeInterval)nsti_s_TTL {
-	return [[self alloc] initContextWithSeconds:nsti_s_TTL];
+@interface Context : NSObject
+{
+	NSTimeInterval _nsti_s_TTL;
+	NSDate* _nsdt_instant;
 }
-+ (EntryContext*) context:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL {
-	return [[self alloc] initContext:id_Context withSeconds:nsti_s_TTL];
+
+@property id entry;
+@property NSDictionary* userInfo;
+
++ (Context*) contextWithEntry:(id)id_entry userInfo:(NSDictionary*)nsdic_userInfo andSeconds:(NSTimeInterval)nsti_s_TTL;
+
+- (instancetype) init NS_UNAVAILABLE;
+- (instancetype) initContextWithEntry:(id)id_entry userInfo:(NSDictionary*)nsdic_userInfo andSeconds:(NSTimeInterval)nsti_s_TTL;
+
+- (BOOL) expired;
+
+@end
+
+//----------------------------------------------------------------------------------------------------------------
+
+@implementation Context
+@synthesize entry= _id_entry;
+@synthesize userInfo= _id_userInfo;
+
++ (Context*) contextWithEntry:(id)id_entry userInfo:(NSDictionary*)nsdic_userInfo andSeconds:(NSTimeInterval)nsti_s_TTL {
+	return [[self alloc] initContextWithEntry:id_entry userInfo:nsdic_userInfo andSeconds:nsti_s_TTL];
 }
 
 //- (instancetype) init
@@ -29,37 +48,32 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 //	return self;
 //}
 
-- (instancetype) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL
+- (instancetype) initContextWithEntry:(id)id_entry userInfo:(NSDictionary*)nsdic_userInfo andSeconds:(NSTimeInterval)nsti_s_TTL
 {
 	if ([self init]) {
-		_id_Context= [NSNull null];
+		_id_entry= id_entry;
+		_id_userInfo= nsdic_userInfo;
 		_nsti_s_TTL= nsti_s_TTL;
 		_nsdt_instant= [NSDate date];
 	}
 	return self;
 }
 
-- (instancetype) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL
+- (bool) expired
 {
-	if ([self init]) {
-		_id_Context= id_Context;
-		_nsti_s_TTL= nsti_s_TTL;
-		_nsdt_instant= [NSDate date];
-	}
-	return self;
-}
+	if (_nsti_s_TTL == knsti_ENTRY_EXP_NEVER)
+		return false;
 
-- (BOOL) expired
-{
 	NSTimeInterval ti_since_now= [_nsdt_instant timeIntervalSinceNow]; //  produces a negative time interval
 	if ((-ti_since_now) > _nsti_s_TTL)
-		return TRUE;
+		return true;
 	
-	return FALSE;
+	return false;
 }
 
 @end
 
+//----------------------------------------------------------------------------------------------------------------
 
 @implementation MsgCache
 
@@ -74,7 +88,7 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 {
 	self = [super init];
 	if (self) {
-		_nsmdic_Cache= [[NSMutableDictionary alloc] init];
+		_nsmarr_db= [[NSMutableArray alloc] init];
 		_timer= [NSTimer scheduledTimerWithTimeInterval:ti_poll_res_seconds target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:YES];
 	}
 	return self;
@@ -82,39 +96,78 @@ const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 
 - (void) timerFireMethod:(NSTimer *)timer
 {
-	NSMutableDictionary* nsmdic_New= [[NSMutableDictionary alloc] init];
+//	NSLog(@"_nsmarr_db: %@", _nsmarr_db);
 	
-	[_nsmdic_Cache enumerateKeysAndObjectsUsingBlock: ^(NSString* nsstr_Entry, EntryContext* entryContext, BOOL *stop) {
-		if (! [entryContext expired])
-			[nsmdic_New setObject:entryContext forKey:nsstr_Entry];
+	NSPredicate* nspredicate= [NSPredicate predicateWithBlock:^BOOL(id evaluatedContext, NSDictionary<NSString *,id> *bindings) {
+			if (! [evaluatedContext isKindOfClass:[Context class]])
+				return NO;
 		
-		else NSLog(@"timerFire: *REMOVED [%@][%@]", nsstr_Entry, entryContext.context);
-	}];
+			return [evaluatedContext expired] ? NO : YES;
+		}];
 	
-	_nsmdic_Cache= nsmdic_New;
+	[_nsmarr_db filterUsingPredicate:nspredicate];
 }
 
-- (void) cacheEntry:(NSString*)nsstr_Entry withContext:(EntryContext*)entryContext {
-	[_nsmdic_Cache setObject:entryContext forKey:nsstr_Entry];
+- (void) cacheEntry:(id)entry {
+	[self cacheEntry:entry userInfo:nil andSeconds:knsti_ENTRY_EXP_NEVER];
 }
 
-- (BOOL) contains:(NSString*)nsstr_Entry {
-	EntryContext* entryContext;
-	return [self contains:nsstr_Entry context:&entryContext];
+- (void) cacheEntry:(id)entry userInfo:(id)userInfo {
+	[self cacheEntry:entry userInfo:userInfo andSeconds:knsti_ENTRY_EXP_NEVER];
 }
 
-- (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)p_entryContext {
-	*p_entryContext= [_nsmdic_Cache objectForKey:nsstr_Entry];
-	return (*p_entryContext != nil);
+- (void) cacheEntry:(id)entry userInfo:(id)userInfo andSeconds:(NSTimeInterval)nsti_s_TTL {
+	[_nsmarr_db addObject: [Context contextWithEntry:entry userInfo:userInfo andSeconds:nsti_s_TTL]];
 }
 
-- (void) expire:(NSString*)nsstr_Entry {
-	[_nsmdic_Cache removeObjectForKey:nsstr_Entry];
+- (void) enumerateUsingBlock:(t_blk_Use)blk_Use {
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, bool* pb_stop) {
+			blk_Use(idx, context.entry, context.userInfo, pb_stop);
+		}];
 }
 
-- (NSEnumerator*) entryEnumerator {
-	return [_nsmdic_Cache keyEnumerator];
+- (bool) contains:(id)entry idx:(NSUInteger*)p_nsint_idx predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual
+{
+	__block bool b_contains= false;
+	__block NSUInteger nsint_idx;
+	
+	[self enumerateUsingBlock:^(NSUInteger idx, id evaluated_entry, id evaluated_userInfo, bool* p_b_stop) {
+			if (predicateIsEqual(entry, evaluated_entry)) {
+				b_contains= true;
+				nsint_idx= idx;
+				*p_b_stop= true;
+			}
+		}];
+	
+	*p_nsint_idx= nsint_idx;
+	return b_contains;
 }
+
+- (bool) contains:(id)entry predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual {
+	NSUInteger nsint_idx;
+	return [self contains:entry idx:&nsint_idx predicateIsEqual:predicateIsEqual];
+}
+
+- (bool) contains:(id)entry userInfo:(id*)p_userInfo predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual
+{
+	NSUInteger nsint_idx;
+	bool b_contains= [self contains:entry idx:&nsint_idx predicateIsEqual:predicateIsEqual];
+	if (! b_contains)
+		return b_contains;
+	
+	Context* context= _nsmarr_db[nsint_idx];
+	*p_userInfo= context.userInfo;
+	
+	return b_contains;
+}
+
+- (void) expire:(id)id_Entry {
+//	[_nsmdic_Cache removeObjectForKey:nsstr_Entry];
+}
+
+//- (NSEnumerator*) entryEnumerator {
+//	return [_nsmdic_Cache keyEnumerator];
+//}
 
 @end
 

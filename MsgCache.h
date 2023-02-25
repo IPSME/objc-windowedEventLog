@@ -9,40 +9,29 @@
 #ifndef MsgCache_h
 #define MsgCache_h
 
-@interface EntryContext : NSObject
-{
-	NSTimeInterval _nsti_s_TTL;
-	NSDate* _nsdt_instant;
-}
-
-@property id context;
-
-+ (EntryContext*) contextWithSeconds:(NSTimeInterval)nsti_s_TTL;
-+ (EntryContext*) context:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
-
-- (instancetype) init NS_UNAVAILABLE;
-- (instancetype) initContextWithSeconds:(NSTimeInterval)nsti_s_TTL;
-- (instancetype) initContext:(id)id_Context withSeconds:(NSTimeInterval)nsti_s_TTL;
-
-- (BOOL) expired;
-
-@end
-
 extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 
-@interface MsgCache : NSObject
+@interface MsgCache<t_Entry, t_UserInfo> : NSObject // // Generics
 {
-	NSMutableDictionary* _nsmdic_Cache;
+	NSMutableArray* _nsmarr_db;
 	NSTimer* _timer;
 }
+
+typedef void (^t_blk_Use)(NSUInteger idx, t_Entry entry, t_UserInfo userInfo, bool* p_b_stop);
+typedef bool (^t_PredicateIsEqual)(id entry1, id entry2);
 
 - (instancetype) init;
 - (instancetype) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds;
 
-- (void) cacheEntry:(NSString*)nsstr_Entry withContext:(EntryContext*)entryContext;
-- (BOOL) contains:(NSString*)nsstr_Entry;
-- (BOOL) contains:(NSString*)nsstr_Entry context:(EntryContext**)p_entryContext;
-- (void) expire:(NSString*)nsstr_Entry;
+- (void) cacheEntry:(t_Entry)entry;
+- (void) cacheEntry:(t_Entry)entry userInfo:(t_UserInfo)userInfo;
+- (void) cacheEntry:(t_Entry)entry userInfo:(t_UserInfo)userInfo andSeconds:(NSTimeInterval)nsti_s_TTL;
+
+- (void) enumerateUsingBlock:(t_blk_Use)blk_Use;
+
+- (bool) contains:(t_Entry)entry predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual;
+- (bool) contains:(t_Entry)entry userInfo:(t_UserInfo*)p_userInfo predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual;
+- (void) expire:(t_Entry)entry;
 
 
 // NSEnumerator* enumerator= [msgCache_ entryEnumerator];
@@ -51,7 +40,7 @@ extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 //     EntryContext* entryContext;
 //     [msgCache_ contains:nsstr_Entry context:&entryContext];
 //}
-- (NSEnumerator*) entryEnumerator;
+//- (NSEnumerator*) entryEnumerator;
 
 @end
 
