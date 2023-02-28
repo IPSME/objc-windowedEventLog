@@ -26,7 +26,7 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 - (instancetype) init NS_UNAVAILABLE;
 - (instancetype) initContextWithEntry:(id)id_entry userInfo:(NSDictionary*)nsdic_userInfo andSeconds:(NSTimeInterval)nsti_s_TTL;
 
-- (BOOL) expired;
+- (bool) expired;
 
 @end
 
@@ -121,16 +121,20 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 }
 
 - (void) enumerateUsingBlock:(t_blk_Evaluate)blk_Evaluate {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, bool* p_b_stop) {
-			blk_Evaluate(idx, context.entry, context.userInfo, p_b_stop);
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, BOOL* p_bool_stop) {
+			bool b_stop;
+			blk_Evaluate(idx, context.entry, context.userInfo, &b_stop);
+			*p_bool_stop= (b_stop) ? YES : NO;
 		}];
 }
 
 - (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, bool* p_b_stop) {
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, BOOL* p_bool_stop) {
 			if (evaluated_nsuint_idx < nsuint_idx)
 				return;
-			blk_Evaluate(evaluated_nsuint_idx, context.entry, context.userInfo, p_b_stop);
+			bool b_stop;
+			blk_Evaluate(evaluated_nsuint_idx, context.entry, context.userInfo, &b_stop);
+			*p_bool_stop= (b_stop) ? YES : NO;
 		}];
 }
 
