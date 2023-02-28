@@ -120,26 +120,34 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 	[_nsmarr_db addObject: [Context contextWithEntry:entry userInfo:userInfo andSeconds:nsti_s_TTL]];
 }
 
-- (void) enumerateUsingBlock:(t_blk_Use)blk_Use {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, bool* pb_stop) {
-			blk_Use(idx, context.entry, context.userInfo, pb_stop);
+- (void) enumerateUsingBlock:(t_blk_Evaluate)blk_Evaluate {
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, bool* p_b_stop) {
+			blk_Evaluate(idx, context.entry, context.userInfo, p_b_stop);
 		}];
 }
 
-- (bool) contains:(id)entry idx:(NSUInteger*)p_nsint_idx predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual
+- (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate {
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, bool* p_b_stop) {
+			if (evaluated_nsuint_idx < nsuint_idx)
+				return;
+			blk_Evaluate(evaluated_nsuint_idx, context.entry, context.userInfo, p_b_stop);
+		}];
+}
+
+- (bool) contains:(id)entry idx:(NSUInteger*)p_nsuint_idx predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual
 {
 	__block bool b_contains= false;
-	__block NSUInteger nsint_idx;
+	__block NSUInteger nsuint_idx;
 	
 	[self enumerateUsingBlock:^(NSUInteger idx, id evaluated_entry, id evaluated_userInfo, bool* p_b_stop) {
 			if (predicateIsEqual(entry, evaluated_entry)) {
 				b_contains= true;
-				nsint_idx= idx;
+				nsuint_idx= idx;
 				*p_b_stop= true;
 			}
 		}];
 	
-	*p_nsint_idx= nsint_idx;
+	*p_nsuint_idx= nsuint_idx;
 	return b_contains;
 }
 
