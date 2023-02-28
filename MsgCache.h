@@ -11,7 +11,7 @@
 
 extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 
-@interface MsgCache<t_Entry, t_UserInfo> : NSObject // // Generics
+@interface MsgCache<t_Entry, t_UserInfo> : NSObject // Generics
 {
 	NSMutableArray* _nsmarr_db;
 	NSTimer* _timer;
