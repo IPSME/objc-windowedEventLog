@@ -24,6 +24,7 @@ typedef bool (^t_PredicateIsEqual)(id entry1, id entry2);
 - (instancetype) initWithSeconds:(NSTimeInterval)ti_poll_res_seconds;
 
 - (void) cacheEntry:(t_Entry)entry;
+- (void) cacheEntry:(t_Entry)entry andSeconds:(NSTimeInterval)nsti_s_TTL;
 - (void) cacheEntry:(t_Entry)entry userInfo:(t_UserInfo)userInfo;
 - (void) cacheEntry:(t_Entry)entry userInfo:(t_UserInfo)userInfo andSeconds:(NSTimeInterval)nsti_s_TTL;
 

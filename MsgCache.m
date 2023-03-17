@@ -112,6 +112,10 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 	[self cacheEntry:entry userInfo:nil andSeconds:knsti_ENTRY_EXP_NEVER];
 }
 
+- (void) cacheEntry:(id)entry andSeconds:(NSTimeInterval)nsti_s_TTL {
+	[self cacheEntry:entry userInfo:nil andSeconds:nsti_s_TTL];
+}
+
 - (void) cacheEntry:(id)entry userInfo:(id)userInfo {
 	[self cacheEntry:entry userInfo:userInfo andSeconds:knsti_ENTRY_EXP_NEVER];
 }
