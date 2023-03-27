@@ -17,7 +17,7 @@ extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 	NSTimer* _timer;
 }
 
-typedef void (^t_blk_Evaluate)(NSUInteger nsunit_idx, t_Entry entry, t_UserInfo userInfo, bool* p_b_stop);
+typedef void (^t_blk_Evaluate)(NSUInteger nsunit_idx, t_Entry entry, t_UserInfo userInfo, bool* pb_stop);
 typedef bool (^t_PredicateIsEqual)(id entry1, id entry2);
 
 - (instancetype) init;

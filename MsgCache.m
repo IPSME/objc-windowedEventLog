@@ -125,20 +125,20 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 }
 
 - (void) enumerateUsingBlock:(t_blk_Evaluate)blk_Evaluate {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, BOOL* p_bool_stop) {
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, BOOL* pbool_stop) {
 			bool b_stop;
 			blk_Evaluate(idx, context.entry, context.userInfo, &b_stop);
-			*p_bool_stop= (b_stop) ? YES : NO;
+			*pbool_stop= (b_stop) ? YES : NO;
 		}];
 }
 
 - (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, BOOL* p_bool_stop) {
+	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, BOOL* pbool_stop) {
 			if (evaluated_nsuint_idx < nsuint_idx)
 				return;
 			bool b_stop;
 			blk_Evaluate(evaluated_nsuint_idx, context.entry, context.userInfo, &b_stop);
-			*p_bool_stop= (b_stop) ? YES : NO;
+			*pbool_stop= (b_stop) ? YES : NO;
 		}];
 }
 
@@ -147,11 +147,11 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 	__block bool b_contains= false;
 	__block NSUInteger nsuint_idx;
 	
-	[self enumerateUsingBlock:^(NSUInteger idx, id evaluated_entry, id evaluated_userInfo, bool* p_b_stop) {
+	[self enumerateUsingBlock:^(NSUInteger idx, id evaluated_entry, id evaluated_userInfo, bool* pb_stop) {
 			if (predicateIsEqual(entry, evaluated_entry)) {
 				b_contains= true;
 				nsuint_idx= idx;
-				*p_b_stop= true;
+				*pb_stop= true;
 			}
 		}];
 	
