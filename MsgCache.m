@@ -124,23 +124,31 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 	[_nsmarr_db addObject: [Context contextWithEntry:entry userInfo:userInfo andSeconds:nsti_s_TTL]];
 }
 
-- (void) enumerateUsingBlock:(t_blk_Evaluate)blk_Evaluate {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger idx, BOOL* pbool_stop) {
+- (void) enumerateObjectsWithOptions:(NSEnumerationOptions)opts usingBlock:(t_blk_Evaluate)blk_Evaluate {
+	[_nsmarr_db enumerateObjectsWithOptions:opts usingBlock:^(Context* context, NSUInteger idx, BOOL* pbool_stop) {
 			bool b_stop;
 			blk_Evaluate(idx, context.entry, context.userInfo, &b_stop);
 			*pbool_stop= (b_stop) ? YES : NO;
 		}];
 }
 
-- (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate {
-	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, BOOL* pbool_stop) {
-			if (evaluated_nsuint_idx < nsuint_idx)
-				return;
-			bool b_stop;
-			blk_Evaluate(evaluated_nsuint_idx, context.entry, context.userInfo, &b_stop);
-			*pbool_stop= (b_stop) ? YES : NO;
-		}];
+- (void) enumerateUsingBlock:(t_blk_Evaluate)blk_Evaluate {
+	[self enumerateObjectsWithOptions:0 usingBlock:blk_Evaluate];
 }
+
+- (void) enumerateReverseUsingBlock:(t_blk_Evaluate)blk_Evaluate {
+	[self enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:blk_Evaluate];
+}
+
+//- (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate {
+//	[_nsmarr_db enumerateObjectsUsingBlock:^(Context* context, NSUInteger evaluated_nsuint_idx, BOOL* pbool_stop) {
+//			if (evaluated_nsuint_idx < nsuint_idx)
+//				return;
+//			bool b_stop;
+//			blk_Evaluate(evaluated_nsuint_idx, context.entry, context.userInfo, &b_stop);
+//			*pbool_stop= (b_stop) ? YES : NO;
+//		}];
+//}
 
 - (bool) contains:(id)entry idx:(NSUInteger*)p_nsuint_idx predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual
 {
