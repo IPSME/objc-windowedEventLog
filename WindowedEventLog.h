@@ -16,7 +16,7 @@ extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 	NSTimer* _timer;
 }
 
-typedef void (^t_blk_Evaluate)(NSUInteger nsunit_idx, t_Entry entry, t_UserInfo userInfo, bool* pb_stop);
+typedef void (^t_blk_Evaluate)(NSUInteger nsunit_idx, t_Entry entry_evaluated, t_UserInfo userInfo_evaluated, bool* pb_stop);
 typedef bool (^t_PredicateIsEqual)(id entry1, id entry2);
 
 - (instancetype) init;
@@ -30,7 +30,7 @@ typedef bool (^t_PredicateIsEqual)(id entry1, id entry2);
 - (void) enumerateUsingBlock:(t_blk_Evaluate)blk_Evaluate;
 - (void) enumerateReverseUsingBlock:(t_blk_Evaluate)blk_Evaluate;
 
-//- (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate;
+- (void) enumerateAt:(NSUInteger)nsuint_idx usingBlock:(t_blk_Evaluate)blk_Evaluate;
 
 //- (bool) contains:(t_Entry)entry predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual;
 //- (bool) contains:(t_Entry)entry userInfo:(t_UserInfo*)p_userInfo predicateIsEqual:(t_PredicateIsEqual)predicateIsEqual;
