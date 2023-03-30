@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MsgCache.h"
+#import "WindowedEventLog.h"
 
 const NSTimeInterval kti_POLL_RES_SECONDS= 1;
 const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
@@ -75,7 +75,7 @@ const NSTimeInterval knsti_ENTRY_EXP_NEVER= -1;
 
 //----------------------------------------------------------------------------------------------------------------
 
-@implementation MsgCache
+@implementation WindowedEventLog
 
 - (instancetype) init {
 	self = [self initWithSeconds:kti_POLL_RES_SECONDS];

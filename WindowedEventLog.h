@@ -1,17 +1,16 @@
 //
-//  MsgCache.h
-//  objc-hubs-mask
+//  WindowedEventLog.h
 //
 //  Created by dev on 2022-04-28.
 //  Copyright © 2022 Root Interface AB. All rights reserved.
 //
 
-#ifndef MsgCache_h
-#define MsgCache_h
+#ifndef WindowedEventLog_h
+#define WindowedEventLog_h
 
 extern const NSTimeInterval kti_POLL_RES_MILLISECONDS;
 
-@interface MsgCache<t_Entry, t_UserInfo> : NSObject // Generics
+@interface WindowedEventLog<t_Entry, t_UserInfo> : NSObject // Generics
 {
 	NSMutableArray* _nsmarr_db;
 	NSTimer* _timer;
@@ -49,4 +48,4 @@ typedef bool (^t_PredicateIsEqual)(id entry1, id entry2);
 
 @end
 
-#endif /* MsgCache_h */
+#endif /* WindowedEventLog_h */
